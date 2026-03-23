@@ -69,7 +69,7 @@
             padding: 10px;
             gap: 8px;
             position: sticky;
-            top: 60px;
+            top: 110px;
             z-index: 99;
         }
 
@@ -365,6 +365,71 @@
             font-size: 3rem;
             margin-bottom: 10px;
         }
+
+        /* Profile Selector */
+        .profile-selector {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .profile-btn {
+            flex: 1;
+            padding: 10px 15px;
+            border: 2px solid var(--border);
+            border-radius: 25px;
+            background: var(--bg);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .profile-btn.him {
+            border-color: #3b82f6;
+        }
+
+        .profile-btn.her {
+            border-color: #ec4899;
+        }
+
+        .profile-btn.him.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        .profile-btn.her.active {
+            background: #ec4899;
+            color: white;
+            border-color: #ec4899;
+        }
+
+        .profile-indicator {
+            position: fixed;
+            top: 10px;
+            right: 15px;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            z-index: 101;
+        }
+
+        .profile-indicator.him {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .profile-indicator.her {
+            background: #ec4899;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -374,7 +439,14 @@
             <h1>💪 Fitness Tracker</h1>
             <span class="date-display" id="currentDate"></span>
         </div>
+        <div class="profile-selector">
+            <button class="profile-btn him" onclick="setProfile('him')">👨 Him</button>
+            <button class="profile-btn her" onclick="setProfile('her')">👩 Her</button>
+        </div>
     </div>
+
+    <!-- Profile Indicator (shows current user) -->
+    <div class="profile-indicator" id="profileIndicator">Him</div>
 
     <!-- Tab Navigation -->
     <div class="tab-nav">
@@ -586,6 +658,32 @@
             weekday: 'short', month: 'short', day: 'numeric'
         });
 
+        // Profile Management
+        let currentProfile = localStorage.getItem('fitness_profile') || 'him';
+
+        function setProfile(profile) {
+            currentProfile = profile;
+            localStorage.setItem('fitness_profile', profile);
+            updateProfileUI();
+            renderWorkoutLog();
+            renderMealLog();
+            renderBodyLog();
+        }
+
+        function updateProfileUI() {
+            // Update profile buttons
+            document.querySelectorAll('.profile-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.profile-btn.${currentProfile}`).classList.add('active');
+
+            // Update profile indicator
+            const indicator = document.getElementById('profileIndicator');
+            indicator.textContent = currentProfile === 'him' ? '👨 Him' : '👩 Her';
+            indicator.className = `profile-indicator ${currentProfile}`;
+        }
+
+        // Initialize profile UI
+        updateProfileUI();
+
         // Data storage
         const STORAGE_KEYS = {
             workouts: 'fitness_workouts',
@@ -595,6 +693,10 @@
 
         function getData(key) {
             return JSON.parse(localStorage.getItem(key) || '[]');
+        }
+
+        function getProfileData(key) {
+            return getData(key).filter(item => item.profile === currentProfile);
         }
 
         function setData(key, data) {
@@ -637,6 +739,7 @@
             const workouts = getData(STORAGE_KEYS.workouts);
             workouts.push({
                 id: Date.now(),
+                profile: currentProfile,
                 date: getToday(),
                 time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
                 name, weight, reps, sets
@@ -666,7 +769,7 @@
         }
 
         function renderWorkoutLog() {
-            const workouts = getData(STORAGE_KEYS.workouts).filter(w => w.date === getToday());
+            const workouts = getProfileData(STORAGE_KEYS.workouts).filter(w => w.date === getToday());
             const container = document.getElementById('workoutLog');
 
             if (workouts.length === 0) {
@@ -703,6 +806,7 @@
             const meals = getData(STORAGE_KEYS.meals);
             meals.push({
                 id: Date.now(),
+                profile: currentProfile,
                 date: getToday(),
                 time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
                 name, protein, calories
@@ -722,6 +826,7 @@
             const meals = getData(STORAGE_KEYS.meals);
             meals.push({
                 id: Date.now(),
+                profile: currentProfile,
                 date: getToday(),
                 time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
                 name, protein, calories
@@ -739,7 +844,7 @@
         }
 
         function renderMealLog() {
-            const meals = getData(STORAGE_KEYS.meals).filter(m => m.date === getToday());
+            const meals = getProfileData(STORAGE_KEYS.meals).filter(m => m.date === getToday());
             const container = document.getElementById('mealLog');
 
             if (meals.length === 0) {
@@ -778,6 +883,7 @@
             const bodyStats = getData(STORAGE_KEYS.body);
             bodyStats.push({
                 id: Date.now(),
+                profile: currentProfile,
                 date: getToday(),
                 time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
                 weight: weight || null,
@@ -803,7 +909,7 @@
         }
 
         function renderBodyLog() {
-            const bodyStats = getData(STORAGE_KEYS.body).slice(-10).reverse();
+            const bodyStats = getProfileData(STORAGE_KEYS.body).slice(-10).reverse();
             const container = document.getElementById('bodyLog');
 
             if (bodyStats.length === 0) {
@@ -831,9 +937,9 @@
 
         // EXPORT FUNCTIONS
         function updateExportStats() {
-            const workouts = getData(STORAGE_KEYS.workouts);
-            const meals = getData(STORAGE_KEYS.meals);
-            const body = getData(STORAGE_KEYS.body);
+            const workouts = getProfileData(STORAGE_KEYS.workouts);
+            const meals = getProfileData(STORAGE_KEYS.meals);
+            const body = getProfileData(STORAGE_KEYS.body);
 
             const allDates = new Set([
                 ...workouts.map(w => w.date),
@@ -857,42 +963,45 @@
         }
 
         function exportWorkouts() {
-            const workouts = getData(STORAGE_KEYS.workouts);
+            const workouts = getProfileData(STORAGE_KEYS.workouts);
             if (workouts.length === 0) {
                 showToast('No workout data to export');
                 return;
             }
 
-            const csv = 'Date,Time,Exercise,Weight_kg,Reps,Sets\n' +
-                workouts.map(w => `${w.date},${w.time},"${w.name}",${w.weight},${w.reps},${w.sets}`).join('\n');
+            const profileName = currentProfile === 'him' ? 'Him' : 'Her';
+            const csv = 'Profile,Date,Time,Exercise,Weight_kg,Reps,Sets\n' +
+                workouts.map(w => `${profileName},${w.date},${w.time},"${w.name}",${w.weight},${w.reps},${w.sets}`).join('\n');
 
-            downloadCSV(`workouts_${getToday()}.csv`, csv);
+            downloadCSV(`workouts_${currentProfile}_${getToday()}.csv`, csv);
         }
 
         function exportMeals() {
-            const meals = getData(STORAGE_KEYS.meals);
+            const meals = getProfileData(STORAGE_KEYS.meals);
             if (meals.length === 0) {
                 showToast('No meal data to export');
                 return;
             }
 
-            const csv = 'Date,Time,Meal,Protein_g,Calories\n' +
-                meals.map(m => `${m.date},${m.time},"${m.name}",${m.protein},${m.calories}`).join('\n');
+            const profileName = currentProfile === 'him' ? 'Him' : 'Her';
+            const csv = 'Profile,Date,Time,Meal,Protein_g,Calories\n' +
+                meals.map(m => `${profileName},${m.date},${m.time},"${m.name}",${m.protein},${m.calories}`).join('\n');
 
-            downloadCSV(`meals_${getToday()}.csv`, csv);
+            downloadCSV(`meals_${currentProfile}_${getToday()}.csv`, csv);
         }
 
         function exportBodyStats() {
-            const body = getData(STORAGE_KEYS.body);
+            const body = getProfileData(STORAGE_KEYS.body);
             if (body.length === 0) {
                 showToast('No body stats to export');
                 return;
             }
 
-            const csv = 'Date,Time,Weight_kg,BodyFat_pct,Notes\n' +
-                body.map(b => `${b.date},${b.time},${b.weight || ''},${b.bodyFat || ''},"${b.notes || ''}"`).join('\n');
+            const profileName = currentProfile === 'him' ? 'Him' : 'Her';
+            const csv = 'Profile,Date,Time,Weight_kg,BodyFat_pct,Notes\n' +
+                body.map(b => `${profileName},${b.date},${b.time},${b.weight || ''},${b.bodyFat || ''},"${b.notes || ''}"`).join('\n');
 
-            downloadCSV(`body_stats_${getToday()}.csv`, csv);
+            downloadCSV(`body_stats_${currentProfile}_${getToday()}.csv`, csv);
         }
 
         function exportAll() {
