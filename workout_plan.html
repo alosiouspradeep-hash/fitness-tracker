@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5-Day Strength Training Program</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #e4e4e7;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Profile Selector */
+        .profile-selector {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .profile-btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .profile-btn.female {
+            background: rgba(233, 69, 96, 0.2);
+            color: #ff6b6b;
+            border: 2px solid rgba(233, 69, 96, 0.3);
+        }
+
+        .profile-btn.female.active {
+            background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
+            color: white;
+            box-shadow: 0 10px 30px rgba(233, 69, 96, 0.4);
+        }
+
+        .profile-btn.male {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            border: 2px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .profile-btn.male.active {
+            background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+            color: white;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
+        }
+
+        .profile-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .profile-btn .icon {
+            font-size: 1.5rem;
+        }
+
+        .profile-btn .details {
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .header.female {
+            background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
+            box-shadow: 0 10px 40px rgba(233, 69, 96, 0.3);
+        }
+
+        .header.male {
+            background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+            box-shadow: 0 10px 40px rgba(59, 130, 246, 0.3);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            color: white;
+        }
+
+        /* Profile Card */
+        .profile-card {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            padding: 25px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .profile-item {
+            text-align: center;
+        }
+
+        .profile-item .label {
+            font-size: 0.85rem;
+            color: #a1a1aa;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .profile-item .value {
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .female-plan .profile-item .value {
+            color: #e94560;
+        }
+
+        .male-plan .profile-item .value {
+            color: #3b82f6;
+        }
+
+        .profile-item .value.highlight {
+            color: #f59e0b !important;
+        }
+
+        .profile-item .value.success {
+            color: #10b981 !important;
+        }
+
+        /* Focus Banner (Male Only) */
+        .focus-banner {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(239, 68, 68, 0.1) 100%);
+            border: 2px solid rgba(245, 158, 11, 0.4);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .focus-banner h3 {
+            color: #f59e0b;
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+
+        .focus-banner p {
+            color: #d4d4d8;
+            font-size: 0.95rem;
+        }
+
+        /* Weekly Overview */
+        .weekly-overview {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            border-radius: 2px;
+        }
+
+        .female-plan .section-title::before {
+            background: #e94560;
+        }
+
+        .male-plan .section-title::before {
+            background: #3b82f6;
+        }
+
+        .week-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+        }
+
+        .day-card {
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .female-plan .day-card {
+            background: linear-gradient(135deg, rgba(233, 69, 96, 0.1) 0%, rgba(255, 107, 107, 0.05) 100%);
+            border: 1px solid rgba(233, 69, 96, 0.2);
+        }
+
+        .male-plan .day-card {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(6, 182, 212, 0.05) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .day-card.quad-focus {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(239, 68, 68, 0.1) 100%) !important;
+            border-color: rgba(245, 158, 11, 0.3) !important;
+        }
+
+        .day-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .female-plan .day-card:hover {
+            box-shadow: 0 10px 30px rgba(233, 69, 96, 0.2);
+        }
+
+        .male-plan .day-card:hover {
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2);
+        }
+
+        .day-card.rest {
+            background: linear-gradient(135deg, rgba(100, 100, 100, 0.1) 0%, rgba(80, 80, 80, 0.05) 100%) !important;
+            border-color: rgba(100, 100, 100, 0.2) !important;
+        }
+
+        .day-number {
+            font-size: 0.85rem;
+            color: #a1a1aa;
+            margin-bottom: 5px;
+        }
+
+        .day-focus {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .female-plan .day-focus {
+            color: #e94560;
+        }
+
+        .male-plan .day-focus {
+            color: #3b82f6;
+        }
+
+        .day-card.quad-focus .day-focus {
+            color: #f59e0b !important;
+        }
+
+        .day-card.rest .day-focus {
+            color: #71717a !important;
+        }
+
+        .day-muscles {
+            font-size: 0.85rem;
+            color: #a1a1aa;
+        }
+
+        /* Workout Day Section */
+        .workout-day {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            margin-bottom: 25px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .workout-day.quad-primary {
+            border: 2px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .workout-day-header {
+            padding: 20px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .female-plan .workout-day-header {
+            background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
+        }
+
+        .male-plan .workout-day-header {
+            background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+        }
+
+        .workout-day.quad-primary .workout-day-header {
+            background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%) !important;
+        }
+
+        .workout-day-header h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .workout-day-header .tag {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: white;
+        }
+
+        .exercise-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .exercise-table th {
+            background: rgba(0,0,0,0.2);
+            padding: 15px 20px;
+            text-align: left;
+            font-weight: 500;
+            color: #a1a1aa;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .exercise-table td {
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .exercise-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .exercise-table tr:hover {
+            background: rgba(255,255,255,0.02);
+        }
+
+        .exercise-table tr.quad-exercise {
+            background: rgba(245, 158, 11, 0.08);
+        }
+
+        .exercise-table tr.quad-exercise:hover {
+            background: rgba(245, 158, 11, 0.12);
+        }
+
+        .exercise-name {
+            font-weight: 500;
+            color: #fff;
+        }
+
+        .exercise-detail {
+            color: #a1a1aa;
+            font-size: 0.95rem;
+        }
+
+        .sets-reps {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .female-plan .sets-reps {
+            background: rgba(233, 69, 96, 0.15);
+            color: #ff6b6b;
+        }
+
+        .male-plan .sets-reps {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+        }
+
+        .quad-exercise .sets-reps {
+            background: rgba(245, 158, 11, 0.15) !important;
+            color: #fbbf24 !important;
+        }
+
+        /* Fat Loss Section */
+        .fat-loss-section {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.05) 100%);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .fat-loss-section .section-title::before {
+            background: #10b981 !important;
+        }
+
+        .fat-loss-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .fat-loss-tip {
+            background: rgba(0,0,0,0.2);
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .fat-loss-tip h4 {
+            color: #10b981;
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+        }
+
+        .fat-loss-tip p {
+            color: #a1a1aa;
+            font-size: 0.85rem;
+        }
+
+        /* Guidelines Section */
+        .guidelines {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .guidelines-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .guideline-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .guideline-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .female-plan .guideline-icon {
+            background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
+        }
+
+        .male-plan .guideline-icon {
+            background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+        }
+
+        .guideline-icon.fat-loss {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+        }
+
+        .guideline-content h4 {
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 3px;
+        }
+
+        .guideline-content p {
+            font-size: 0.9rem;
+            color: #a1a1aa;
+        }
+
+        /* Notes */
+        .notes {
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .female-plan .notes {
+            background: linear-gradient(135deg, rgba(233, 69, 96, 0.1) 0%, rgba(255, 107, 107, 0.05) 100%);
+            border: 1px solid rgba(233, 69, 96, 0.2);
+        }
+
+        .male-plan .notes {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .notes p {
+            color: #d4d4d8;
+            font-size: 0.95rem;
+        }
+
+        .female-plan .notes strong {
+            color: #e94560;
+        }
+
+        .male-plan .notes strong {
+            color: #f59e0b;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #71717a;
+            font-size: 0.85rem;
+        }
+
+        /* Hide/Show Plans */
+        .plan-content {
+            display: none;
+        }
+
+        .plan-content.active {
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .profile-card {
+                gap: 20px;
+            }
+
+            .profile-selector {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .profile-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .exercise-table th,
+            .exercise-table td {
+                padding: 12px 15px;
+            }
+
+            .workout-day-header {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+                color: #333;
+            }
+
+            .profile-selector {
+                display: none;
+            }
+
+            .workout-day-header {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Profile Selector -->
+        <div class="profile-selector">
+            <button class="profile-btn female active" onclick="showPlan('female')">
+                <span class="icon">👩</span>
+                <span>Female Plan</span>
+                <span class="details">39 yrs • 66 kg • Strength</span>
+            </button>
+            <button class="profile-btn male" onclick="showPlan('male')">
+                <span class="icon">👨</span>
+                <span>Male Plan</span>
+                <span class="details">40 yrs • 81 kg • Recomp</span>
+            </button>
+        </div>
+
+        <!-- ==================== FEMALE PLAN ==================== -->
+        <div id="female-plan" class="plan-content female-plan active">
+            <!-- Header -->
+            <div class="header female">
+                <h1>💪 5-Day Strength Training Program</h1>
+                <p class="subtitle">Build Strength & Muscle | Quad Focus Every Day</p>
+            </div>
+
+            <!-- Profile Card -->
+            <div class="profile-card">
+                <div class="profile-item">
+                    <div class="label">Gender</div>
+                    <div class="value">Female</div>
+                </div>
+                <div class="profile-item">
+                    <div class="label">Age</div>
+                    <div class="value">39 yrs</div>
+                </div>
+                <div class="profile-item">
+                    <div class="label">Weight</div>
+                    <div class="value">66 kg</div>
+                </div>
+                <div class="profile-item">
+                    <div class="label">Goal</div>
+                    <div class="value">Strength</div>
+                </div>
+            </div>
+
+            <!-- Weekly Overview -->
+            <div class="weekly-overview">
+                <h2 class="section-title">Weekly Split</h2>
+                <div class="week-grid">
+                    <div class="day-card">
+                        <div class="day-number">Day 1</div>
+                        <div class="day-focus">Push + Quads</div>
+                        <div class="day-muscles">Chest, Shoulders, Triceps, Quads</div>
+                    </div>
+                    <div class="day-card">
+                        <div class="day-number">Day 2</div>
+                        <div class="day-focus">Pull + Quads</div>
+                        <div class="day-muscles">Back, Biceps, Rear Delts, Quads</div>
+                    </div>
+                    <div class="day-card">
+                        <div class="day-number">Day 3</div>
+                        <div class="day-focus">Legs (Heavy Quad)</div>
+                        <div class="day-muscles">Quads, Glutes, Calves</div>
+                    </div>
+                    <div class="day-card">
+                        <div class="day-number">Day 4</div>
+                        <div class="day-focus">Upper + Quads</div>
+                        <div class="day-muscles">Chest, Back, Arms, Quads</div>
+                    </div>
+                    <div class="day-card">
+                        <div class="day-number">Day 5</div>
+                        <div class="day-focus">Legs (Quad + Glute)</div>
+                        <div class="day-muscles">Quads, Glutes, Hamstrings, Core</div>
+                    </div>
+                    <div class="day-card rest">
+                        <div class="day-number">Day 6-7</div>
+                        <div class="day-focus">Rest</div>
+                        <div class="day-muscles">Recovery & Stretching</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Day 1 -->
+            <div class="workout-day">
+                <div class="workout-day-header">
+                    <h3>Day 1 - Push + Quads</h3>
+                    <span class="tag">Chest • Shoulders • Triceps • Quads</span>
+                </div>
+                <table class="exercise-table">
+                    <thead>
+                        <tr><th>Exercise</th><th>Sets</th><th>Reps</th><th>Rest</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td class="exercise-name">Barbell Bench Press</td><td><span class="sets-reps">4</span></td><td class="exercise-detail">6-8</td><td class="exercise-detail">90s</td></tr>
+                        <tr><td class="exercise-name">Incline Dumbbell Press</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">8-10</td><td class="exercise-detail">75s</td></tr>
+                        <tr><td class="exercise-name">Overhead Shoulder Press</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">8-10</td><td class="exercise-detail">75s</td></tr>
+                        <tr><td class="exercise-name">Lateral Raises</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">12-15</td><td class="exercise-detail">60s</td></tr>
+                        <tr><td class="exercise-name">Tricep Pushdowns</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">10-12</td><td class="exercise-detail">60s</td></tr>
+                        <tr class="quad-exercise"><td class="exercise-name">🦵 Goblet Squats</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">12-15</td><td class="exercise-detail">60s</td></tr>
+                        <tr class="quad-exercise"><td class="exercise-name">🦵 Leg Extensions</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">15-20</td><td class="exercise-detail">45s</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Day 2 -->
+            <div class="workout-day">
+                <div class="workout-day-header">
+                    <h3>Day 2 - Pull + Quads</h3>
+                    <span class="tag">Back • Biceps • Rear Delts • Quads</span>
+                </div>
+                <table class="exercise-table">
+                    <thead>
+                        <tr><th>Exercise</th><th>Sets</th><th>Reps</th><th>Rest</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td class="exercise-name">Lat Pulldowns</td><td><span class="sets-reps">4</span></td><td class="exercise-detail">8-10</td><td class="exercise-detail">75s</td></tr>
+                        <tr><td class="exercise-name">Seated Cable Rows</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">8-10</td><td class="exercise-detail">75s</td></tr>
+                        <tr><td class="exercise-name">Single Arm Dumbbell Rows</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">8-10</td><td class="exercise-detail">60s</td></tr>
+                        <tr><td class="exercise-name">Face Pulls</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">12-15</td><td class="exercise-detail">60s</td></tr>
+                        <tr><td class="exercise-name">Barbell Curls</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">8-10</td><td class="exercise-detail">60s</td></tr>
+                        <tr class="quad-exercise"><td class="exercise-name">🦵 Sissy Squats or Wall Sits</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">10-12 / 45s</td><td class="exercise-detail">60s</td></tr>
+                        <tr class="quad-exercise"><td class="exercise-name">🦵 Walking Lunges</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">12/leg</td><td class="exercise-detail">60s</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Day 3 -->
+            <div class="workout-day">
+                <div class="workout-day-header">
+                    <h3>Day 3 - Heavy Quad Day</h3>
+                    <span class="tag">🔥 PRIMARY QUAD DAY • Glutes • Calves</span>
+                </div>
+                <table class="exercise-table">
+                    <thead>
+                        <tr><th>Exercise</th><th>Sets</th><th>Reps</th><th>Rest</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr class="quad-exercise"><td class="exercise-name">🦵 Barbell Back Squat (Heavy)</td><td><span class="sets-reps">5</span></td><td class="exercise-detail">5-6</td><td class="exercise-detail">150s</td></tr>
+                        <tr class="quad-exercise"><td class="exercise-name">🦵 Leg Press (Feet Low & Narrow)</td><td><span class="sets-reps">4</span></td><td class="exercise-detail">8-10</td><td class="exercise-detail">90s</td></tr>
+                        <tr class="quad-exercise"><td class="exercise-name">🦵 Hack Squats</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">10-12</td><td class="exercise-detail">90s</td></tr>
+                        <tr class="quad-exercise"><td class="exercise-name">🦵 Leg Extensions (Pause at Top)</td><td><span class="sets-reps">4</span></td><td class="exercise-detail">12-15</td><td class="exercise-detail">60s</td></tr>
+                        <tr class="quad-exercise"><td class="exercise-name">🦵 Sissy Squats</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">10-12</td><td class="exercise-detail">60s</td></tr>
+                        <tr><td class="exercise-name">Standing Calf Raises</td><td><span class="sets-reps">4</span></td><td class="exercise-detail">12-15</td><td class="exercise-detail">60s</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Day 4 -->
+            <div class="workout-day">
+                <div class="workout-day-header">
+                    <h3>Day 4 - Upper Body + Quads</h3>
+                    <span class="tag">Chest • Back • Arms • Quads</span>
+                </div>
+                <table class="exercise-table">
+                    <thead>
+                        <tr><th>Exercise</th><th>Sets</th><th>Reps</th><th>Rest</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td class="exercise-name">Dumbbell Bench Press</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">8-10</td><td class="exercise-detail">75s</td></tr>
+                        <tr><td class="exercise-name">Bent Over Rows</td><td><span class="sets-reps">4</span></td><td class="exercise-detail">6-8</td><td class="exercise-detail">90s</td></tr>
+                        <tr><td class="exercise-name">Arnold Press</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">10-12</td><td class="exercise-detail">75s</td></tr>
+                        <tr><td class="exercise-name">Superset: Curls + Pushdowns</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">10-12</td><td class="exercise-detail">60s</td></tr>
+                        <tr class="quad-exercise"><td class="exercise-name">🦵 Front Squats (Light)</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">10-12</td><td class="exercise-detail">75s</td></tr>
+                        <tr class="quad-exercise"><td class="exercise-name">🦵 Step-Ups (Weighted)</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">10/leg</td><td class="exercise-detail">60s</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Day 5 -->
+            <div class="workout-day">
+                <div class="workout-day-header">
+                    <h3>Day 5 - Quads + Glutes/Hams</h3>
+                    <span class="tag">Quads • Glutes • Hamstrings • Core</span>
+                </div>
+                <table class="exercise-table">
+                    <thead>
+                        <tr><th>Exercise</th><th>Sets</th><th>Reps</th><th>Rest</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr class="quad-exercise"><td class="exercise-name">🦵 Bulgarian Split Squats</td><td><span class="sets-reps">4</span></td><td class="exercise-detail">8-10/leg</td><td class="exercise-detail">75s</td></tr>
+                        <tr class="quad-exercise"><td class="exercise-name">🦵 Leg Press</td><td><span class="sets-reps">4</span></td><td class="exercise-detail">10-12</td><td class="exercise-detail">90s</td></tr>
+                        <tr><td class="exercise-name">Romanian Deadlifts</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">8-10</td><td class="exercise-detail">90s</td></tr>
+                        <tr><td class="exercise-name">Hip Thrusts</td><td><span class="sets-reps">4</span></td><td class="exercise-detail">8-10</td><td class="exercise-detail">90s</td></tr>
+                        <tr class="quad-exercise"><td class="exercise-name">🦵 Leg Extensions (Drop Set)</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">10+10+10</td><td class="exercise-detail">60s</td></tr>
+                        <tr><td class="exercise-name">Lying Leg Curls</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">10-12</td><td class="exercise-detail">60s</td></tr>
+                        <tr><td class="exercise-name">Plank Hold</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">45-60s</td><td class="exercise-detail">45s</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Guidelines -->
+            <div class="guidelines">
+                <h2 class="section-title">Key Guidelines</h2>
+                <div class="guidelines-grid">
+                    <div class="guideline-item"><div class="guideline-icon">🔥</div><div class="guideline-content"><h4>Warm-up</h4><p>5-10 min cardio + dynamic stretching</p></div></div>
+                    <div class="guideline-item"><div class="guideline-icon">📈</div><div class="guideline-content"><h4>Progressive Overload</h4><p>Increase weight when you hit top rep range</p></div></div>
+                    <div class="guideline-item"><div class="guideline-icon">🥩</div><div class="guideline-content"><h4>Protein Intake</h4><p>1.6-2g per kg (~105-130g/day)</p></div></div>
+                    <div class="guideline-item"><div class="guideline-icon">😴</div><div class="guideline-content"><h4>Sleep</h4><p>7-9 hours for optimal recovery</p></div></div>
+                    <div class="guideline-item"><div class="guideline-icon">💧</div><div class="guideline-content"><h4>Hydration</h4><p>2.5-3L water daily</p></div></div>
+                    <div class="guideline-item"><div class="guideline-icon">🔄</div><div class="guideline-content"><h4>Deload Week</h4><p>Every 4-6 weeks, reduce intensity</p></div></div>
+                    <div class="guideline-item"><div class="guideline-icon">🦵</div><div class="guideline-content"><h4>Quad Exercises</h4><p>Highlighted rows = daily quad work</p></div></div>
+                </div>
+            </div>
+
+            <!-- Notes -->
+            <div class="notes">
+                <h2 class="section-title">Important Notes</h2>
+                <p>
+                    <strong>Quad Focus Strategy:</strong> This program hits quads every day with varying intensity. Day 3 is your heavy quad day - go all out.
+                    On upper body days (1, 2, 4), quad work is lighter/moderate volume for recovery. Day 5 combines quads with posterior chain.
+                    <br><br>
+                    <strong>Recovery Tips:</strong> With daily quad training, prioritize sleep, protein intake (130g+/day), and foam rolling/stretching quads between sessions.
+                    If quads feel overtrained, reduce sets on upper body days. Listen to your body and adjust intensity as needed.
+                </p>
+            </div>
+        </div>
+
+        <!-- ==================== MALE PLAN ==================== -->
+        <div id="male-plan" class="plan-content male-plan">
+            <!-- Header -->
+            <div class="header male">
+                <h1>💪 5-Day Strength Training Program</h1>
+                <p class="subtitle">Build Muscle & Reduce Fat | Heavy Quad Focus</p>
+            </div>
+
+            <!-- Profile Card -->
+            <div class="profile-card">
+                <div class="profile-item">
+                    <div class="label">Gender</div>
+                    <div class="value">Male</div>
+                </div>
+                <div class="profile-item">
+                    <div class="label">Age</div>
+                    <div class="value">40 yrs</div>
+                </div>
+                <div class="profile-item">
+                    <div class="label">Weight</div>
+                    <div class="value">81 kg</div>
+                </div>
+                <div class="profile-item">
+                    <div class="label">Body Fat</div>
+                    <div class="value highlight">24%</div>
+                </div>
+                <div class="profile-item">
+                    <div class="label">Goal</div>
+                    <div class="value success">Recomp</div>
+                </div>
+            </div>
+
+            <!-- Focus Banner -->
+            <div class="focus-banner">
+                <h3>🎯 Priority Focus: QUAD DEVELOPMENT + FAT LOSS</h3>
+                <p>Chest already strong (minimal volume) • Shoulders & Arms maintained • Quads = weak point • Heavy quad work every session</p>
+            </div>
+
+            <!-- Weekly Overview -->
+            <div class="weekly-overview">
+                <h2 class="section-title">Weekly Split</h2>
+                <div class="week-grid">
+                    <div class="day-card">
+                        <div class="day-number">Day 1</div>
+                        <div class="day-focus">Push (Maint.) + Quads</div>
+                        <div class="day-muscles">Shoulders, Chest, Triceps, Quads</div>
+                    </div>
+                    <div class="day-card">
+                        <div class="day-number">Day 2</div>
+                        <div class="day-focus">Pull (Maint.) + Quads</div>
+                        <div class="day-muscles">Back, Rear Delts, Biceps, Quads</div>
+                    </div>
+                    <div class="day-card quad-focus">
+                        <div class="day-number">Day 3</div>
+                        <div class="day-focus">🔥 HEAVY QUAD DAY</div>
+                        <div class="day-muscles">Quads, Glutes, Calves</div>
+                    </div>
+                    <div class="day-card">
+                        <div class="day-number">Day 4</div>
+                        <div class="day-focus">Upper (Maint.) + Quads</div>
+                        <div class="day-muscles">Shoulders, Back, Arms, Quads</div>
+                    </div>
+                    <div class="day-card quad-focus">
+                        <div class="day-number">Day 5</div>
+                        <div class="day-focus">🔥 QUAD + POSTERIOR</div>
+                        <div class="day-muscles">Quads, Hams, Glutes, Core</div>
+                    </div>
+                    <div class="day-card rest">
+                        <div class="day-number">Day 6-7</div>
+                        <div class="day-focus">Active Recovery</div>
+                        <div class="day-muscles">Light Cardio, Stretching</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Day 1 -->
+            <div class="workout-day">
+                <div class="workout-day-header">
+                    <h3>Day 1 - Push (Maintenance) + Quads</h3>
+                    <span class="tag">Shoulders • Chest • Triceps • Quads</span>
+                </div>
+                <table class="exercise-table">
+                    <thead>
+                        <tr><th>Exercise</th><th>Sets</th><th>Reps</th><th>Rest</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td class="exercise-name">Overhead Press (Barbell/DB)</td><td><span class="sets-reps">4</span></td><td class="exercise-detail">6-8</td><td class="exercise-detail">90s</td></tr>
+                        <tr><td class="exercise-name">Lateral Raises</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">12-15</td><td class="exercise-detail">60s</td></tr>
+                        <tr><td class="exercise-name">Front Raises or Cable Raises</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">12-15</td><td class="exercise-detail">60s</td></tr>
+                        <tr><td class="exercise-name">Incline Dumbbell Press</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">8-10</td><td class="exercise-detail">75s</td></tr>
+                        <tr><td class="exercise-name">Tricep Pushdowns</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">10-12</td><td class="exercise-detail">60s</td></tr>
+                        <tr><td class="exercise-name">Overhead Tricep Extension</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">10-12</td><td class="exercise-detail">60s</td></tr>
+                        <tr class="quad-exercise"><td class="exercise-name">🦵 Front Squats</td><td><span class="sets-reps">4</span></td><td class="exercise-detail">8-10</td><td class="exercise-detail">90s</td></tr>
+                        <tr class="quad-exercise"><td class="exercise-name">🦵 Leg Extensions</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">12-15</td><td class="exercise-detail">60s</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Day 2 -->
+            <div class="workout-day">
+                <div class="workout-day-header">
+                    <h3>Day 2 - Pull (Maintenance) + Quads</h3>
+                    <span class="tag">Back • Rear Delts • Biceps • Quads</span>
+                </div>
+                <table class="exercise-table">
+                    <thead>
+                        <tr><th>Exercise</th><th>Sets</th><th>Reps</th><th>Rest</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td class="exercise-name">Weighted Pull-Ups or Lat Pulldown</td><td><span class="sets-reps">4</span></td><td class="exercise-detail">6-10</td><td class="exercise-detail">90s</td></tr>
+                        <tr><td class="exercise-name">Barbell Rows</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">8-10</td><td class="exercise-detail">75s</td></tr>
+                        <tr><td class="exercise-name">Rear Delt Flyes</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">12-15</td><td class="exercise-detail">60s</td></tr>
+                        <tr><td class="exercise-name">Face Pulls</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">15-20</td><td class="exercise-detail">45s</td></tr>
+                        <tr><td class="exercise-name">Barbell Curls</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">8-10</td><td class="exercise-detail">60s</td></tr>
+                        <tr><td class="exercise-name">Hammer Curls</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">10-12</td><td class="exercise-detail">60s</td></tr>
+                        <tr class="quad-exercise"><td class="exercise-name">🦵 Goblet Squats (Pause at Bottom)</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">12-15</td><td class="exercise-detail">60s</td></tr>
+                        <tr class="quad-exercise"><td class="exercise-name">🦵 Walking Lunges</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">12/leg</td><td class="exercise-detail">60s</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Day 3 - Heavy Quad Day -->
+            <div class="workout-day quad-primary">
+                <div class="workout-day-header">
+                    <h3>Day 3 - 🔥 HEAVY QUAD DAY</h3>
+                    <span class="tag">PRIMARY FOCUS • Maximum Quad Volume</span>
+                </div>
+                <table class="exercise-table">
+                    <thead>
+                        <tr><th>Exercise</th><th>Sets</th><th>Reps</th><th>Rest</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr class="quad-exercise"><td class="exercise-name">🦵 Barbell Back Squat (Heavy)</td><td><span class="sets-reps">5</span></td><td class="exercise-detail">5-6</td><td class="exercise-detail">180s</td></tr>
+                        <tr class="quad-exercise"><td class="exercise-name">🦵 Leg Press (Feet Low & Narrow)</td><td><span class="sets-reps">4</span></td><td class="exercise-detail">8-10</td><td class="exercise-detail">120s</td></tr>
+                        <tr class="quad-exercise"><td class="exercise-name">🦵 Hack Squats</td><td><span class="sets-reps">4</span></td><td class="exercise-detail">10-12</td><td class="exercise-detail">90s</td></tr>
+                        <tr class="quad-exercise"><td class="exercise-name">🦵 Bulgarian Split Squats</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">10/leg</td><td class="exercise-detail">75s</td></tr>
+                        <tr class="quad-exercise"><td class="exercise-name">🦵 Leg Extensions (3 sec hold)</td><td><span class="sets-reps">4</span></td><td class="exercise-detail">12-15</td><td class="exercise-detail">60s</td></tr>
+                        <tr class="quad-exercise"><td class="exercise-name">🦵 Sissy Squats</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">To failure</td><td class="exercise-detail">60s</td></tr>
+                        <tr><td class="exercise-name">Standing Calf Raises</td><td><span class="sets-reps">4</span></td><td class="exercise-detail">12-15</td><td class="exercise-detail">60s</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Day 4 -->
+            <div class="workout-day">
+                <div class="workout-day-header">
+                    <h3>Day 4 - Upper Body (Maintenance) + Quads</h3>
+                    <span class="tag">Shoulders • Back • Arms • Quads</span>
+                </div>
+                <table class="exercise-table">
+                    <thead>
+                        <tr><th>Exercise</th><th>Sets</th><th>Reps</th><th>Rest</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td class="exercise-name">Arnold Press</td><td><span class="sets-reps">4</span></td><td class="exercise-detail">8-10</td><td class="exercise-detail">75s</td></tr>
+                        <tr><td class="exercise-name">Lateral Raises (Cable or DB)</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">12-15</td><td class="exercise-detail">60s</td></tr>
+                        <tr><td class="exercise-name">Cable Rows</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">10-12</td><td class="exercise-detail">75s</td></tr>
+                        <tr><td class="exercise-name">Incline Curls</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">10-12</td><td class="exercise-detail">60s</td></tr>
+                        <tr><td class="exercise-name">Skull Crushers</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">10-12</td><td class="exercise-detail">60s</td></tr>
+                        <tr class="quad-exercise"><td class="exercise-name">🦵 Smith Machine Squats (Close)</td><td><span class="sets-reps">4</span></td><td class="exercise-detail">10-12</td><td class="exercise-detail">75s</td></tr>
+                        <tr class="quad-exercise"><td class="exercise-name">🦵 Step-Ups (High Box)</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">10/leg</td><td class="exercise-detail">60s</td></tr>
+                        <tr class="quad-exercise"><td class="exercise-name">🦵 Leg Extensions (Drop Set)</td><td><span class="sets-reps">2</span></td><td class="exercise-detail">10+10+10</td><td class="exercise-detail">90s</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Day 5 -->
+            <div class="workout-day quad-primary">
+                <div class="workout-day-header">
+                    <h3>Day 5 - 🔥 QUADS + Posterior Chain</h3>
+                    <span class="tag">Quads • Hamstrings • Glutes • Core</span>
+                </div>
+                <table class="exercise-table">
+                    <thead>
+                        <tr><th>Exercise</th><th>Sets</th><th>Reps</th><th>Rest</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr class="quad-exercise"><td class="exercise-name">🦵 Front Squats (Moderate-Heavy)</td><td><span class="sets-reps">4</span></td><td class="exercise-detail">6-8</td><td class="exercise-detail">120s</td></tr>
+                        <tr class="quad-exercise"><td class="exercise-name">🦵 Leg Press (Single Leg)</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">10-12/leg</td><td class="exercise-detail">60s</td></tr>
+                        <tr><td class="exercise-name">Romanian Deadlifts</td><td><span class="sets-reps">4</span></td><td class="exercise-detail">8-10</td><td class="exercise-detail">90s</td></tr>
+                        <tr><td class="exercise-name">Barbell Hip Thrusts</td><td><span class="sets-reps">4</span></td><td class="exercise-detail">10-12</td><td class="exercise-detail">75s</td></tr>
+                        <tr class="quad-exercise"><td class="exercise-name">🦵 Walking Lunges (Long Stride)</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">12/leg</td><td class="exercise-detail">60s</td></tr>
+                        <tr><td class="exercise-name">Lying Leg Curls</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">10-12</td><td class="exercise-detail">60s</td></tr>
+                        <tr class="quad-exercise"><td class="exercise-name">🦵 Leg Extensions (Burnout)</td><td><span class="sets-reps">2</span></td><td class="exercise-detail">20-25</td><td class="exercise-detail">45s</td></tr>
+                        <tr><td class="exercise-name">Hanging Leg Raises</td><td><span class="sets-reps">3</span></td><td class="exercise-detail">12-15</td><td class="exercise-detail">45s</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Meal Plan Section -->
+            <div class="fat-loss-section" style="border-color: rgba(59, 130, 246, 0.3);">
+                <h2 class="section-title">🍽️ Sample Meal Plan (2000-2200 kcal | 170g Protein)</h2>
+                <table class="exercise-table" style="margin-bottom: 20px;">
+                    <thead>
+                        <tr><th>Meal</th><th>Time</th><th>Food</th><th>Protein</th><th>Calories</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="exercise-name">Meal 1 - Breakfast</td>
+                            <td class="exercise-detail">7:00 AM</td>
+                            <td class="exercise-detail">4 eggs (scrambled) + 2 toast + 1 avocado</td>
+                            <td><span class="sets-reps">28g</span></td>
+                            <td class="exercise-detail">~450</td>
+                        </tr>
+                        <tr>
+                            <td class="exercise-name">Meal 2 - Snack</td>
+                            <td class="exercise-detail">10:00 AM</td>
+                            <td class="exercise-detail">Greek yogurt (200g) + handful almonds</td>
+                            <td><span class="sets-reps">25g</span></td>
+                            <td class="exercise-detail">~280</td>
+                        </tr>
+                        <tr>
+                            <td class="exercise-name">Meal 3 - Lunch</td>
+                            <td class="exercise-detail">1:00 PM</td>
+                            <td class="exercise-detail">Grilled chicken breast (180g) + rice (150g) + veggies</td>
+                            <td><span class="sets-reps">45g</span></td>
+                            <td class="exercise-detail">~500</td>
+                        </tr>
+                        <tr>
+                            <td class="exercise-name">Meal 4 - Pre-Workout</td>
+                            <td class="exercise-detail">4:00 PM</td>
+                            <td class="exercise-detail">Protein shake (1 scoop) + banana + oats (40g)</td>
+                            <td><span class="sets-reps">28g</span></td>
+                            <td class="exercise-detail">~320</td>
+                        </tr>
+                        <tr>
+                            <td class="exercise-name">Meal 5 - Dinner</td>
+                            <td class="exercise-detail">7:30 PM</td>
+                            <td class="exercise-detail">Salmon/Fish (180g) OR Turkey (200g) + sweet potato + salad</td>
+                            <td><span class="sets-reps">40g</span></td>
+                            <td class="exercise-detail">~450</td>
+                        </tr>
+                        <tr style="background: rgba(16, 185, 129, 0.1);">
+                            <td class="exercise-name"><strong>TOTAL</strong></td>
+                            <td class="exercise-detail">-</td>
+                            <td class="exercise-detail">-</td>
+                            <td><span class="sets-reps" style="background: rgba(16, 185, 129, 0.2); color: #10b981;"><strong>~166g</strong></span></td>
+                            <td class="exercise-detail"><strong>~2000</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="fat-loss-grid">
+                    <div class="fat-loss-tip">
+                        <h4>Protein Sources (No Beef)</h4>
+                        <p>Chicken, Turkey, Fish (Salmon, Tuna, Tilapia), Eggs, Greek Yogurt, Cottage Cheese, Whey Protein, Tofu, Lentils</p>
+                    </div>
+                    <div class="fat-loss-tip">
+                        <h4>Adjust Calories</h4>
+                        <p>Add 100-200 cal on heavy quad days (Day 3 & 5). Reduce carbs slightly on rest days. Keep protein constant.</p>
+                    </div>
+                    <div class="fat-loss-tip">
+                        <h4>Meal Timing</h4>
+                        <p>Eat protein within 2hrs post-workout. Space meals 3-4 hours apart. 30-40g protein per meal is optimal.</p>
+                    </div>
+                    <div class="fat-loss-tip">
+                        <h4>Hydration</h4>
+                        <p>Drink 500ml water with each meal. Total 3-4L daily. Add electrolytes if training hard.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fat Loss Section -->
+            <div class="fat-loss-section">
+                <h2 class="section-title">🔥 Fat Loss Strategy (24% → Target 15%)</h2>
+                <div class="fat-loss-grid">
+                    <div class="fat-loss-tip">
+                        <h4>Caloric Deficit</h4>
+                        <p>Aim for 300-500 cal deficit. At 81kg, target ~2000-2200 kcal/day for steady fat loss while preserving muscle.</p>
+                    </div>
+                    <div class="fat-loss-tip">
+                        <h4>Protein Priority</h4>
+                        <p>Consume 160-180g protein daily (2-2.2g/kg) to maintain muscle during the cut. Spread across 4-5 meals.</p>
+                    </div>
+                    <div class="fat-loss-tip">
+                        <h4>Cardio Protocol</h4>
+                        <p>Add 2-3 sessions of 20-30min LISS (walking, cycling) on rest days. Avoid excessive cardio that impacts quad recovery.</p>
+                    </div>
+                    <div class="fat-loss-tip">
+                        <h4>Post-Workout</h4>
+                        <p>Consider 10-15 min incline treadmill walk after weights to boost calorie burn without affecting performance.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Guidelines -->
+            <div class="guidelines">
+                <h2 class="section-title">Key Guidelines</h2>
+                <div class="guidelines-grid">
+                    <div class="guideline-item"><div class="guideline-icon">🔥</div><div class="guideline-content"><h4>Warm-up</h4><p>10 min cardio + leg swings + light squats</p></div></div>
+                    <div class="guideline-item"><div class="guideline-icon">📈</div><div class="guideline-content"><h4>Progressive Overload</h4><p>Add weight to quad lifts weekly</p></div></div>
+                    <div class="guideline-item"><div class="guideline-icon">🥩</div><div class="guideline-content"><h4>Protein Intake</h4><p>160-180g/day for muscle retention</p></div></div>
+                    <div class="guideline-item"><div class="guideline-icon">😴</div><div class="guideline-content"><h4>Sleep</h4><p>7-9 hours for optimal recovery</p></div></div>
+                    <div class="guideline-item"><div class="guideline-icon">💧</div><div class="guideline-content"><h4>Hydration</h4><p>3-4L water daily</p></div></div>
+                    <div class="guideline-item"><div class="guideline-icon">🦵</div><div class="guideline-content"><h4>Quad Exercises</h4><p>Gold highlighted = priority focus</p></div></div>
+                    <div class="guideline-item"><div class="guideline-icon fat-loss">🏃</div><div class="guideline-content"><h4>Active Recovery</h4><p>Light walking on rest days</p></div></div>
+                    <div class="guideline-item"><div class="guideline-icon">🔄</div><div class="guideline-content"><h4>Deload Week</h4><p>Every 4-5 weeks, reduce volume 40%</p></div></div>
+                </div>
+            </div>
+
+            <!-- Notes -->
+            <div class="notes">
+                <h2 class="section-title">Important Notes</h2>
+                <p>
+                    <strong>Quad Priority Strategy:</strong> This program is designed to bring up weak quads while maintaining your already strong upper body.
+                    Upper body volume is reduced to "maintenance" level (enough to keep gains, not over-train). Days 3 and 5 are dedicated heavy quad days.
+                    <br><br>
+                    <strong>Upper Body Note:</strong> Chest is on minimal volume (1 exercise/day) since it's already strong. Shoulders get more focus with 2-3 exercises per push day.
+                    Arms (biceps/triceps) get dedicated work on both push and pull days to maintain size while focusing recovery on quads.
+                    <br><br>
+                    <strong>Fat Loss + Muscle:</strong> At 24% body fat, you can effectively lose fat while building quad muscle (body recomposition).
+                    Keep protein high, maintain a moderate deficit, and prioritize sleep. Track progress with photos and measurements, not just scale weight.
+                </p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Build Strength • Build Muscle • Stay Consistent 💪</p>
+        </div>
+    </div>
+
+    <script>
+        function showPlan(plan) {
+            // Hide all plans
+            document.querySelectorAll('.plan-content').forEach(el => {
+                el.classList.remove('active');
+            });
+
+            // Remove active from all buttons
+            document.querySelectorAll('.profile-btn').forEach(el => {
+                el.classList.remove('active');
+            });
+
+            // Show selected plan
+            document.getElementById(plan + '-plan').classList.add('active');
+
+            // Activate selected button
+            document.querySelector('.profile-btn.' + plan).classList.add('active');
+        }
+    </script>
+</body>
+</html>

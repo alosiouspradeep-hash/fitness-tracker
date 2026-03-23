@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="FitTrack">
+    <title>Fitness Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg: #0f172a;
+            --card: #1e293b;
+            --card-hover: #334155;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: #334155;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        /* Header */
+        .header {
+            background: var(--card);
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header h1 {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .date-display {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            background: var(--card);
+            padding: 10px;
+            gap: 8px;
+            position: sticky;
+            top: 60px;
+            z-index: 99;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Content */
+        .tab-content {
+            display: none;
+            padding: 15px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--primary);
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 1rem;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:active {
+            background: var(--primary-dark);
+            transform: scale(0.98);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        /* Log Entries */
+        .log-entry {
+            background: var(--bg);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .log-entry-info {
+            flex: 1;
+        }
+
+        .log-entry-title {
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .log-entry-details {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 3px;
+        }
+
+        .log-entry-value {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .log-entry-delete {
+            background: none;
+            border: none;
+            color: var(--danger);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px;
+            margin-left: 10px;
+        }
+
+        /* Stats Summary */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .stat-card {
+            background: var(--bg);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 3px;
+        }
+
+        /* Quick Add Buttons */
+        .quick-add {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .quick-btn {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        .quick-btn:active {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        /* Export Section */
+        .export-section {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .export-info {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+        }
+
+        .export-stats {
+            background: var(--card);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .nav-btn.active {
+            color: var(--primary);
+        }
+
+        .nav-icon {
+            font-size: 1.3rem;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--success);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-row">
+            <h1>💪 Fitness Tracker</h1>
+            <span class="date-display" id="currentDate"></span>
+        </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="tab-nav">
+        <button class="tab-btn active" onclick="showTab('workout')">Workout</button>
+        <button class="tab-btn" onclick="showTab('meals')">Meals</button>
+        <button class="tab-btn" onclick="showTab('body')">Body</button>
+        <button class="tab-btn" onclick="showTab('export')">Export</button>
+    </div>
+
+    <!-- WORKOUT TAB -->
+    <div id="workout-tab" class="tab-content active">
+        <!-- Today's Summary -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="todayExercises">0</div>
+                <div class="stat-label">Exercises</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="todaySets">0</div>
+                <div class="stat-label">Total Sets</div>
+            </div>
+        </div>
+
+        <!-- Quick Add -->
+        <div class="card">
+            <div class="card-title">Quick Add Exercise</div>
+            <div class="quick-add" id="quickExercises">
+                <button class="quick-btn" onclick="quickAddExercise('Front Squat')">Front Squat</button>
+                <button class="quick-btn" onclick="quickAddExercise('Leg Press')">Leg Press</button>
+                <button class="quick-btn" onclick="quickAddExercise('Leg Extension')">Leg Ext</button>
+                <button class="quick-btn" onclick="quickAddExercise('OHP')">OHP</button>
+                <button class="quick-btn" onclick="quickAddExercise('Lateral Raise')">Lat Raise</button>
+                <button class="quick-btn" onclick="quickAddExercise('Pull-up')">Pull-up</button>
+            </div>
+        </div>
+
+        <!-- Add Exercise Form -->
+        <div class="card">
+            <div class="card-title">Log Exercise</div>
+            <div class="form-group">
+                <label class="form-label">Exercise Name</label>
+                <input type="text" class="form-input" id="exerciseName" placeholder="e.g., Barbell Squat">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Weight (kg)</label>
+                    <input type="number" class="form-input" id="exerciseWeight" placeholder="0">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Reps</label>
+                    <input type="number" class="form-input" id="exerciseReps" placeholder="0">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Sets</label>
+                    <input type="number" class="form-input" id="exerciseSets" placeholder="1" value="1">
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="addExercise()">+ Add Exercise</button>
+        </div>
+
+        <!-- Today's Log -->
+        <div class="card">
+            <div class="card-title">Today's Workout</div>
+            <div id="workoutLog"></div>
+        </div>
+    </div>
+
+    <!-- MEALS TAB -->
+    <div id="meals-tab" class="tab-content">
+        <!-- Today's Nutrition -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="todayCalories">0</div>
+                <div class="stat-label">Calories</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="todayProtein">0g</div>
+                <div class="stat-label">Protein</div>
+            </div>
+        </div>
+
+        <!-- Quick Add Meals -->
+        <div class="card">
+            <div class="card-title">Quick Add</div>
+            <div class="quick-add">
+                <button class="quick-btn" onclick="quickAddMeal('4 Eggs', 28, 280)">4 Eggs (28g)</button>
+                <button class="quick-btn" onclick="quickAddMeal('Chicken 180g', 45, 280)">Chicken (45g)</button>
+                <button class="quick-btn" onclick="quickAddMeal('Greek Yogurt', 20, 150)">Yogurt (20g)</button>
+                <button class="quick-btn" onclick="quickAddMeal('Protein Shake', 25, 120)">Shake (25g)</button>
+                <button class="quick-btn" onclick="quickAddMeal('Salmon 180g', 40, 350)">Salmon (40g)</button>
+            </div>
+        </div>
+
+        <!-- Add Meal Form -->
+        <div class="card">
+            <div class="card-title">Log Meal</div>
+            <div class="form-group">
+                <label class="form-label">Meal / Food</label>
+                <input type="text" class="form-input" id="mealName" placeholder="e.g., Grilled Chicken + Rice">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Protein (g)</label>
+                    <input type="number" class="form-input" id="mealProtein" placeholder="0">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Calories</label>
+                    <input type="number" class="form-input" id="mealCalories" placeholder="0">
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="addMeal()">+ Add Meal</button>
+        </div>
+
+        <!-- Today's Meals -->
+        <div class="card">
+            <div class="card-title">Today's Meals</div>
+            <div id="mealLog"></div>
+        </div>
+    </div>
+
+    <!-- BODY TAB -->
+    <div id="body-tab" class="tab-content">
+        <!-- Current Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="currentWeight">--</div>
+                <div class="stat-label">Weight (kg)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="currentBF">--</div>
+                <div class="stat-label">Body Fat %</div>
+            </div>
+        </div>
+
+        <!-- Log Body Stats -->
+        <div class="card">
+            <div class="card-title">Log Body Stats</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Weight (kg)</label>
+                    <input type="number" step="0.1" class="form-input" id="bodyWeight" placeholder="81.0">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Body Fat %</label>
+                    <input type="number" step="0.1" class="form-input" id="bodyFat" placeholder="24.0">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Notes (optional)</label>
+                <input type="text" class="form-input" id="bodyNotes" placeholder="e.g., Morning, fasted">
+            </div>
+            <button class="btn btn-primary" onclick="addBodyStats()">+ Log Stats</button>
+        </div>
+
+        <!-- Body Log -->
+        <div class="card">
+            <div class="card-title">Recent Measurements</div>
+            <div id="bodyLog"></div>
+        </div>
+    </div>
+
+    <!-- EXPORT TAB -->
+    <div id="export-tab" class="tab-content">
+        <div class="export-section">
+            <div class="export-stats">
+                <div class="card-title">Data Summary</div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalWorkouts">0</div>
+                        <div class="stat-label">Workout Entries</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalMeals">0</div>
+                        <div class="stat-label">Meal Entries</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalBody">0</div>
+                        <div class="stat-label">Body Stats</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="daysTracked">0</div>
+                        <div class="stat-label">Days Tracked</div>
+                    </div>
+                </div>
+            </div>
+
+            <p class="export-info">Export your data as CSV files. AirDrop to your Mac for analysis.</p>
+
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <button class="btn btn-primary" onclick="exportWorkouts()">📊 Export Workouts CSV</button>
+                <button class="btn btn-success" onclick="exportMeals()">🍽️ Export Meals CSV</button>
+                <button class="btn btn-outline" onclick="exportBodyStats()">📏 Export Body Stats CSV</button>
+                <button class="btn btn-outline" onclick="exportAll()">📁 Export All Data</button>
+            </div>
+
+            <div style="margin-top: 30px;">
+                <p class="export-info">Danger Zone</p>
+                <button class="btn btn-danger" onclick="clearAllData()">🗑️ Clear All Data</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // Initialize date
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', {
+            weekday: 'short', month: 'short', day: 'numeric'
+        });
+
+        // Data storage
+        const STORAGE_KEYS = {
+            workouts: 'fitness_workouts',
+            meals: 'fitness_meals',
+            body: 'fitness_body'
+        };
+
+        function getData(key) {
+            return JSON.parse(localStorage.getItem(key) || '[]');
+        }
+
+        function setData(key, data) {
+            localStorage.setItem(key, JSON.stringify(data));
+        }
+
+        function getToday() {
+            return new Date().toISOString().split('T')[0];
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        // Tab Navigation
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabName + '-tab').classList.add('active');
+            event.target.classList.add('active');
+
+            if (tabName === 'export') updateExportStats();
+        }
+
+        // WORKOUT FUNCTIONS
+        function addExercise() {
+            const name = document.getElementById('exerciseName').value.trim();
+            const weight = parseFloat(document.getElementById('exerciseWeight').value) || 0;
+            const reps = parseInt(document.getElementById('exerciseReps').value) || 0;
+            const sets = parseInt(document.getElementById('exerciseSets').value) || 1;
+
+            if (!name) {
+                showToast('Please enter exercise name');
+                return;
+            }
+
+            const workouts = getData(STORAGE_KEYS.workouts);
+            workouts.push({
+                id: Date.now(),
+                date: getToday(),
+                time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+                name, weight, reps, sets
+            });
+            setData(STORAGE_KEYS.workouts, workouts);
+
+            // Clear form
+            document.getElementById('exerciseName').value = '';
+            document.getElementById('exerciseWeight').value = '';
+            document.getElementById('exerciseReps').value = '';
+            document.getElementById('exerciseSets').value = '1';
+
+            renderWorkoutLog();
+            showToast('Exercise added!');
+        }
+
+        function quickAddExercise(name) {
+            document.getElementById('exerciseName').value = name;
+            document.getElementById('exerciseWeight').focus();
+        }
+
+        function deleteWorkout(id) {
+            let workouts = getData(STORAGE_KEYS.workouts);
+            workouts = workouts.filter(w => w.id !== id);
+            setData(STORAGE_KEYS.workouts, workouts);
+            renderWorkoutLog();
+        }
+
+        function renderWorkoutLog() {
+            const workouts = getData(STORAGE_KEYS.workouts).filter(w => w.date === getToday());
+            const container = document.getElementById('workoutLog');
+
+            if (workouts.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">🏋️</div>No exercises logged today</div>';
+            } else {
+                container.innerHTML = workouts.map(w => `
+                    <div class="log-entry">
+                        <div class="log-entry-info">
+                            <div class="log-entry-title">${w.name}</div>
+                            <div class="log-entry-details">${w.time} • ${w.sets} sets × ${w.reps} reps</div>
+                        </div>
+                        <div class="log-entry-value">${w.weight}kg</div>
+                        <button class="log-entry-delete" onclick="deleteWorkout(${w.id})">×</button>
+                    </div>
+                `).join('');
+            }
+
+            // Update stats
+            document.getElementById('todayExercises').textContent = workouts.length;
+            document.getElementById('todaySets').textContent = workouts.reduce((sum, w) => sum + w.sets, 0);
+        }
+
+        // MEAL FUNCTIONS
+        function addMeal() {
+            const name = document.getElementById('mealName').value.trim();
+            const protein = parseFloat(document.getElementById('mealProtein').value) || 0;
+            const calories = parseInt(document.getElementById('mealCalories').value) || 0;
+
+            if (!name) {
+                showToast('Please enter meal name');
+                return;
+            }
+
+            const meals = getData(STORAGE_KEYS.meals);
+            meals.push({
+                id: Date.now(),
+                date: getToday(),
+                time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+                name, protein, calories
+            });
+            setData(STORAGE_KEYS.meals, meals);
+
+            // Clear form
+            document.getElementById('mealName').value = '';
+            document.getElementById('mealProtein').value = '';
+            document.getElementById('mealCalories').value = '';
+
+            renderMealLog();
+            showToast('Meal added!');
+        }
+
+        function quickAddMeal(name, protein, calories) {
+            const meals = getData(STORAGE_KEYS.meals);
+            meals.push({
+                id: Date.now(),
+                date: getToday(),
+                time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+                name, protein, calories
+            });
+            setData(STORAGE_KEYS.meals, meals);
+            renderMealLog();
+            showToast(`${name} added!`);
+        }
+
+        function deleteMeal(id) {
+            let meals = getData(STORAGE_KEYS.meals);
+            meals = meals.filter(m => m.id !== id);
+            setData(STORAGE_KEYS.meals, meals);
+            renderMealLog();
+        }
+
+        function renderMealLog() {
+            const meals = getData(STORAGE_KEYS.meals).filter(m => m.date === getToday());
+            const container = document.getElementById('mealLog');
+
+            if (meals.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">🍽️</div>No meals logged today</div>';
+            } else {
+                container.innerHTML = meals.map(m => `
+                    <div class="log-entry">
+                        <div class="log-entry-info">
+                            <div class="log-entry-title">${m.name}</div>
+                            <div class="log-entry-details">${m.time} • ${m.calories} cal</div>
+                        </div>
+                        <div class="log-entry-value">${m.protein}g</div>
+                        <button class="log-entry-delete" onclick="deleteMeal(${m.id})">×</button>
+                    </div>
+                `).join('');
+            }
+
+            // Update stats
+            const totalProtein = meals.reduce((sum, m) => sum + m.protein, 0);
+            const totalCalories = meals.reduce((sum, m) => sum + m.calories, 0);
+            document.getElementById('todayProtein').textContent = totalProtein + 'g';
+            document.getElementById('todayCalories').textContent = totalCalories;
+        }
+
+        // BODY STATS FUNCTIONS
+        function addBodyStats() {
+            const weight = parseFloat(document.getElementById('bodyWeight').value);
+            const bodyFat = parseFloat(document.getElementById('bodyFat').value);
+            const notes = document.getElementById('bodyNotes').value.trim();
+
+            if (!weight && !bodyFat) {
+                showToast('Please enter weight or body fat');
+                return;
+            }
+
+            const bodyStats = getData(STORAGE_KEYS.body);
+            bodyStats.push({
+                id: Date.now(),
+                date: getToday(),
+                time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+                weight: weight || null,
+                bodyFat: bodyFat || null,
+                notes
+            });
+            setData(STORAGE_KEYS.body, bodyStats);
+
+            // Clear form
+            document.getElementById('bodyWeight').value = '';
+            document.getElementById('bodyFat').value = '';
+            document.getElementById('bodyNotes').value = '';
+
+            renderBodyLog();
+            showToast('Stats logged!');
+        }
+
+        function deleteBodyStat(id) {
+            let bodyStats = getData(STORAGE_KEYS.body);
+            bodyStats = bodyStats.filter(b => b.id !== id);
+            setData(STORAGE_KEYS.body, bodyStats);
+            renderBodyLog();
+        }
+
+        function renderBodyLog() {
+            const bodyStats = getData(STORAGE_KEYS.body).slice(-10).reverse();
+            const container = document.getElementById('bodyLog');
+
+            if (bodyStats.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">📏</div>No measurements logged</div>';
+            } else {
+                container.innerHTML = bodyStats.map(b => `
+                    <div class="log-entry">
+                        <div class="log-entry-info">
+                            <div class="log-entry-title">${b.date}</div>
+                            <div class="log-entry-details">${b.time}${b.notes ? ' • ' + b.notes : ''}</div>
+                        </div>
+                        <div class="log-entry-value">${b.weight ? b.weight + 'kg' : ''} ${b.bodyFat ? b.bodyFat + '%' : ''}</div>
+                        <button class="log-entry-delete" onclick="deleteBodyStat(${b.id})">×</button>
+                    </div>
+                `).join('');
+            }
+
+            // Update current stats
+            const latest = bodyStats[0];
+            if (latest) {
+                document.getElementById('currentWeight').textContent = latest.weight ? latest.weight + 'kg' : '--';
+                document.getElementById('currentBF').textContent = latest.bodyFat ? latest.bodyFat + '%' : '--';
+            }
+        }
+
+        // EXPORT FUNCTIONS
+        function updateExportStats() {
+            const workouts = getData(STORAGE_KEYS.workouts);
+            const meals = getData(STORAGE_KEYS.meals);
+            const body = getData(STORAGE_KEYS.body);
+
+            const allDates = new Set([
+                ...workouts.map(w => w.date),
+                ...meals.map(m => m.date),
+                ...body.map(b => b.date)
+            ]);
+
+            document.getElementById('totalWorkouts').textContent = workouts.length;
+            document.getElementById('totalMeals').textContent = meals.length;
+            document.getElementById('totalBody').textContent = body.length;
+            document.getElementById('daysTracked').textContent = allDates.size;
+        }
+
+        function downloadCSV(filename, csvContent) {
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            link.click();
+            showToast('CSV downloaded!');
+        }
+
+        function exportWorkouts() {
+            const workouts = getData(STORAGE_KEYS.workouts);
+            if (workouts.length === 0) {
+                showToast('No workout data to export');
+                return;
+            }
+
+            const csv = 'Date,Time,Exercise,Weight_kg,Reps,Sets\n' +
+                workouts.map(w => `${w.date},${w.time},"${w.name}",${w.weight},${w.reps},${w.sets}`).join('\n');
+
+            downloadCSV(`workouts_${getToday()}.csv`, csv);
+        }
+
+        function exportMeals() {
+            const meals = getData(STORAGE_KEYS.meals);
+            if (meals.length === 0) {
+                showToast('No meal data to export');
+                return;
+            }
+
+            const csv = 'Date,Time,Meal,Protein_g,Calories\n' +
+                meals.map(m => `${m.date},${m.time},"${m.name}",${m.protein},${m.calories}`).join('\n');
+
+            downloadCSV(`meals_${getToday()}.csv`, csv);
+        }
+
+        function exportBodyStats() {
+            const body = getData(STORAGE_KEYS.body);
+            if (body.length === 0) {
+                showToast('No body stats to export');
+                return;
+            }
+
+            const csv = 'Date,Time,Weight_kg,BodyFat_pct,Notes\n' +
+                body.map(b => `${b.date},${b.time},${b.weight || ''},${b.bodyFat || ''},"${b.notes || ''}"`).join('\n');
+
+            downloadCSV(`body_stats_${getToday()}.csv`, csv);
+        }
+
+        function exportAll() {
+            exportWorkouts();
+            setTimeout(() => exportMeals(), 500);
+            setTimeout(() => exportBodyStats(), 1000);
+        }
+
+        function clearAllData() {
+            if (confirm('Are you sure? This will delete ALL your data permanently.')) {
+                if (confirm('Really? There is no undo!')) {
+                    localStorage.removeItem(STORAGE_KEYS.workouts);
+                    localStorage.removeItem(STORAGE_KEYS.meals);
+                    localStorage.removeItem(STORAGE_KEYS.body);
+                    renderWorkoutLog();
+                    renderMealLog();
+                    renderBodyLog();
+                    updateExportStats();
+                    showToast('All data cleared');
+                }
+            }
+        }
+
+        // Initialize
+        renderWorkoutLog();
+        renderMealLog();
+        renderBodyLog();
+    </script>
+</body>
+</html>
