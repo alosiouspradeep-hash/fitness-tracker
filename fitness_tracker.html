@@ -479,7 +479,18 @@
 
         <!-- Today's Workout Plan -->
         <div class="card">
-            <div class="card-title" id="todayWorkoutTitle">Today's Workout</div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <div class="card-title" id="todayWorkoutTitle" style="margin-bottom: 0;">Today's Workout</div>
+                <select class="form-select" id="workoutDaySelect" onchange="changeWorkoutDay()" style="width: auto; padding: 8px 12px; font-size: 0.85rem;">
+                    <option value="auto">Auto (Today)</option>
+                    <option value="1">Day 1 - Push + Quads</option>
+                    <option value="2">Day 2 - Pull + Quads</option>
+                    <option value="3">Day 3 - Heavy Quad</option>
+                    <option value="4">Day 4 - Upper + Quads</option>
+                    <option value="5">Day 5 - Quads + Posterior</option>
+                    <option value="rest">Rest Day</option>
+                </select>
+            </div>
             <div class="quick-add" id="todayExercisesList">
                 <!-- Dynamically populated from workout plan -->
             </div>
@@ -789,11 +800,33 @@
             }
         };
 
+        // Selected workout day (null = auto based on day of week)
+        let selectedWorkoutDay = null;
+
         // Get workout day based on day of week (Mon=1, Tue=2... Sat/Sun=rest)
         function getWorkoutDay() {
+            if (selectedWorkoutDay !== null) {
+                return selectedWorkoutDay;
+            }
             const dayOfWeek = new Date().getDay(); // 0=Sun, 1=Mon, etc.
             if (dayOfWeek === 0 || dayOfWeek === 6) return 'rest';
             return dayOfWeek; // 1-5 for Mon-Fri
+        }
+
+        // Handle dropdown change
+        function changeWorkoutDay() {
+            const select = document.getElementById('workoutDaySelect');
+            const value = select.value;
+
+            if (value === 'auto') {
+                selectedWorkoutDay = null;
+            } else if (value === 'rest') {
+                selectedWorkoutDay = 'rest';
+            } else {
+                selectedWorkoutDay = parseInt(value);
+            }
+
+            renderTodayWorkout();
         }
 
         // Render today's workout exercises
