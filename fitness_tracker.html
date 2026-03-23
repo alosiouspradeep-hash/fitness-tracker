@@ -6,6 +6,10 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="FitTrack">
+    <!-- Prevent caching -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Fitness Tracker</title>
     <style>
         * {
@@ -443,7 +447,7 @@
     <!-- Header -->
     <div class="header">
         <div class="header-row">
-            <h1>💪 Fitness Tracker</h1>
+            <h1>💪 Fitness Tracker <span style="font-size: 0.5rem; opacity: 0.5;">v2</span></h1>
             <span class="date-display" id="currentDate"></span>
         </div>
         <div class="profile-selector">
