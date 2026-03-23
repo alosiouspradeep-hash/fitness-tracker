@@ -268,17 +268,24 @@
         }
 
         .quick-btn {
-            padding: 8px 12px;
+            padding: 10px 14px;
             border: 1px solid var(--border);
-            border-radius: 20px;
+            border-radius: 10px;
             background: var(--bg);
             color: var(--text);
             font-size: 0.8rem;
             cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
         }
 
         .quick-btn:active {
             background: var(--primary);
+            border-color: var(--primary);
+            transform: scale(0.98);
+        }
+
+        .quick-btn:hover {
             border-color: var(--primary);
         }
 
@@ -470,16 +477,11 @@
             </div>
         </div>
 
-        <!-- Quick Add -->
+        <!-- Today's Workout Plan -->
         <div class="card">
-            <div class="card-title">Quick Add Exercise</div>
-            <div class="quick-add" id="quickExercises">
-                <button class="quick-btn" onclick="quickAddExercise('Front Squat')">Front Squat</button>
-                <button class="quick-btn" onclick="quickAddExercise('Leg Press')">Leg Press</button>
-                <button class="quick-btn" onclick="quickAddExercise('Leg Extension')">Leg Ext</button>
-                <button class="quick-btn" onclick="quickAddExercise('OHP')">OHP</button>
-                <button class="quick-btn" onclick="quickAddExercise('Lateral Raise')">Lat Raise</button>
-                <button class="quick-btn" onclick="quickAddExercise('Pull-up')">Pull-up</button>
+            <div class="card-title" id="todayWorkoutTitle">Today's Workout</div>
+            <div class="quick-add" id="todayExercisesList">
+                <!-- Dynamically populated from workout plan -->
             </div>
         </div>
 
@@ -665,6 +667,7 @@
             currentProfile = profile;
             localStorage.setItem('fitness_profile', profile);
             updateProfileUI();
+            renderTodayWorkout();
             renderWorkoutLog();
             renderMealLog();
             renderBodyLog();
@@ -683,6 +686,137 @@
 
         // Initialize profile UI
         updateProfileUI();
+
+        // Workout Plan Data (from workout_plan.html)
+        const WORKOUT_PLANS = {
+            him: {
+                1: { title: 'Day 1 - Push + Quads', exercises: [
+                    {name: 'Overhead Press', sets: 4, reps: '6-8'},
+                    {name: 'Lateral Raises', sets: 3, reps: '12-15'},
+                    {name: 'Front Raises', sets: 3, reps: '12-15'},
+                    {name: 'Incline DB Press', sets: 3, reps: '8-10'},
+                    {name: 'Tricep Pushdowns', sets: 3, reps: '10-12'},
+                    {name: 'Overhead Tricep Ext', sets: 3, reps: '10-12'},
+                    {name: '🦵 Front Squats', sets: 4, reps: '8-10'},
+                    {name: '🦵 Leg Extensions', sets: 3, reps: '12-15'}
+                ]},
+                2: { title: 'Day 2 - Pull + Quads', exercises: [
+                    {name: 'Pull-ups/Lat Pulldown', sets: 4, reps: '6-10'},
+                    {name: 'Barbell Rows', sets: 3, reps: '8-10'},
+                    {name: 'Rear Delt Flyes', sets: 3, reps: '12-15'},
+                    {name: 'Face Pulls', sets: 3, reps: '15-20'},
+                    {name: 'Barbell Curls', sets: 3, reps: '8-10'},
+                    {name: 'Hammer Curls', sets: 3, reps: '10-12'},
+                    {name: '🦵 Goblet Squats', sets: 3, reps: '12-15'},
+                    {name: '🦵 Walking Lunges', sets: 3, reps: '12/leg'}
+                ]},
+                3: { title: 'Day 3 - 🔥 HEAVY QUAD DAY', exercises: [
+                    {name: '🦵 Back Squat (Heavy)', sets: 5, reps: '5-6'},
+                    {name: '🦵 Leg Press', sets: 4, reps: '8-10'},
+                    {name: '🦵 Hack Squats', sets: 4, reps: '10-12'},
+                    {name: '🦵 Bulgarian Split Squats', sets: 3, reps: '10/leg'},
+                    {name: '🦵 Leg Extensions', sets: 4, reps: '12-15'},
+                    {name: '🦵 Sissy Squats', sets: 3, reps: 'failure'},
+                    {name: 'Calf Raises', sets: 4, reps: '12-15'}
+                ]},
+                4: { title: 'Day 4 - Upper + Quads', exercises: [
+                    {name: 'Arnold Press', sets: 4, reps: '8-10'},
+                    {name: 'Lateral Raises', sets: 3, reps: '12-15'},
+                    {name: 'Cable Rows', sets: 3, reps: '10-12'},
+                    {name: 'Incline Curls', sets: 3, reps: '10-12'},
+                    {name: 'Skull Crushers', sets: 3, reps: '10-12'},
+                    {name: '🦵 Smith Machine Squat', sets: 4, reps: '10-12'},
+                    {name: '🦵 Step-Ups', sets: 3, reps: '10/leg'},
+                    {name: '🦵 Leg Extensions', sets: 2, reps: '10+10+10'}
+                ]},
+                5: { title: 'Day 5 - 🔥 Quads + Posterior', exercises: [
+                    {name: '🦵 Front Squats', sets: 4, reps: '6-8'},
+                    {name: '🦵 Single Leg Press', sets: 3, reps: '10-12/leg'},
+                    {name: 'Romanian Deadlifts', sets: 4, reps: '8-10'},
+                    {name: 'Hip Thrusts', sets: 4, reps: '10-12'},
+                    {name: '🦵 Walking Lunges', sets: 3, reps: '12/leg'},
+                    {name: 'Leg Curls', sets: 3, reps: '10-12'},
+                    {name: '🦵 Leg Extensions', sets: 2, reps: '20-25'},
+                    {name: 'Hanging Leg Raises', sets: 3, reps: '12-15'}
+                ]},
+                rest: { title: '🛌 Rest Day', exercises: []}
+            },
+            her: {
+                1: { title: 'Day 1 - Push + Quads', exercises: [
+                    {name: 'Barbell Bench Press', sets: 4, reps: '6-8'},
+                    {name: 'Incline DB Press', sets: 3, reps: '8-10'},
+                    {name: 'Overhead Press', sets: 3, reps: '8-10'},
+                    {name: 'Lateral Raises', sets: 3, reps: '12-15'},
+                    {name: 'Tricep Pushdowns', sets: 3, reps: '10-12'},
+                    {name: '🦵 Goblet Squats', sets: 3, reps: '12-15'},
+                    {name: '🦵 Leg Extensions', sets: 3, reps: '15-20'}
+                ]},
+                2: { title: 'Day 2 - Pull + Quads', exercises: [
+                    {name: 'Lat Pulldowns', sets: 4, reps: '8-10'},
+                    {name: 'Seated Cable Rows', sets: 3, reps: '8-10'},
+                    {name: 'DB Rows', sets: 3, reps: '8-10'},
+                    {name: 'Face Pulls', sets: 3, reps: '12-15'},
+                    {name: 'Barbell Curls', sets: 3, reps: '8-10'},
+                    {name: '🦵 Sissy Squats', sets: 3, reps: '10-12'},
+                    {name: '🦵 Walking Lunges', sets: 3, reps: '12/leg'}
+                ]},
+                3: { title: 'Day 3 - Heavy Quad Day', exercises: [
+                    {name: '🦵 Back Squat (Heavy)', sets: 5, reps: '5-6'},
+                    {name: '🦵 Leg Press', sets: 4, reps: '8-10'},
+                    {name: '🦵 Hack Squats', sets: 3, reps: '10-12'},
+                    {name: '🦵 Leg Extensions', sets: 4, reps: '12-15'},
+                    {name: '🦵 Sissy Squats', sets: 3, reps: '10-12'},
+                    {name: 'Calf Raises', sets: 4, reps: '12-15'}
+                ]},
+                4: { title: 'Day 4 - Upper + Quads', exercises: [
+                    {name: 'DB Bench Press', sets: 3, reps: '8-10'},
+                    {name: 'Bent Over Rows', sets: 4, reps: '6-8'},
+                    {name: 'Arnold Press', sets: 3, reps: '10-12'},
+                    {name: 'Curls + Pushdowns', sets: 3, reps: '10-12'},
+                    {name: '🦵 Front Squats', sets: 3, reps: '10-12'},
+                    {name: '🦵 Step-Ups', sets: 3, reps: '10/leg'}
+                ]},
+                5: { title: 'Day 5 - Quads + Glutes', exercises: [
+                    {name: '🦵 Bulgarian Split Squats', sets: 4, reps: '8-10/leg'},
+                    {name: '🦵 Leg Press', sets: 4, reps: '10-12'},
+                    {name: 'Romanian Deadlifts', sets: 3, reps: '8-10'},
+                    {name: 'Hip Thrusts', sets: 4, reps: '8-10'},
+                    {name: '🦵 Leg Extensions', sets: 3, reps: '10+10+10'},
+                    {name: 'Leg Curls', sets: 3, reps: '10-12'},
+                    {name: 'Plank Hold', sets: 3, reps: '45-60s'}
+                ]},
+                rest: { title: '🛌 Rest Day', exercises: []}
+            }
+        };
+
+        // Get workout day based on day of week (Mon=1, Tue=2... Sat/Sun=rest)
+        function getWorkoutDay() {
+            const dayOfWeek = new Date().getDay(); // 0=Sun, 1=Mon, etc.
+            if (dayOfWeek === 0 || dayOfWeek === 6) return 'rest';
+            return dayOfWeek; // 1-5 for Mon-Fri
+        }
+
+        // Render today's workout exercises
+        function renderTodayWorkout() {
+            const workoutDay = getWorkoutDay();
+            const plan = WORKOUT_PLANS[currentProfile][workoutDay];
+            const container = document.getElementById('todayExercisesList');
+            const title = document.getElementById('todayWorkoutTitle');
+
+            title.textContent = plan.title;
+
+            if (plan.exercises.length === 0) {
+                container.innerHTML = '<span style="color: var(--text-muted); font-size: 0.9rem;">Rest day! Recovery & stretching 🧘</span>';
+                return;
+            }
+
+            container.innerHTML = plan.exercises.map(ex =>
+                `<button class="quick-btn" onclick="quickAddExercise('${ex.name}', ${ex.sets}, '${ex.reps}')">${ex.name} (${ex.sets}×${ex.reps})</button>`
+            ).join('');
+        }
+
+        // Initialize today's workout
+        renderTodayWorkout();
 
         // Data storage
         const STORAGE_KEYS = {
@@ -756,8 +890,14 @@
             showToast('Exercise added!');
         }
 
-        function quickAddExercise(name) {
-            document.getElementById('exerciseName').value = name;
+        function quickAddExercise(name, sets, reps) {
+            document.getElementById('exerciseName').value = name.replace('🦵 ', '');
+            if (sets) document.getElementById('exerciseSets').value = sets;
+            // Parse reps - handle ranges like "8-10" or "12/leg"
+            if (reps) {
+                const repNum = parseInt(reps) || 10;
+                document.getElementById('exerciseReps').value = repNum;
+            }
             document.getElementById('exerciseWeight').focus();
         }
 
